@@ -77,6 +77,7 @@
       let aspectRatio = 375 / 667; // The default aspect ratio
       let backgroundImg = null;
       let fileInput = document.getElementById("imageUploader");
+      const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
 
       window.addEventListener("resize", () => {
       setCanvasSize();
@@ -86,13 +87,12 @@
           var file = e.target.files[0];
           var reader = new FileReader();
           reader.onload = function(f) {
-              const fbCanvas = new fabric.Canvas("{{ canvas_id }}");
               var data = f.target.result;
               fabric.Image.fromURL(data, function(img) {
-                  let defaultWidth = fbCanvas.width * 0.25;
-                  let defaultHeight = fbCanvas.height * 0.25;
-                  let defaultLeft = fbCanvas.width * 0.75;
-                  let defaultTop = fbCanvas.height * 0.75;
+                  let defaultWidth = fabricCanvas.width * 0.25;
+                  let defaultHeight = fabricCanvas.height * 0.25;
+                  let defaultLeft = fabricCanvas.width * 0.75;
+                  let defaultTop = fabricCanvas.height * 0.75;
 
                   img.set({
                       left: defaultLeft,
@@ -101,29 +101,30 @@
                       scaleY: defaultHeight / img.height
                   })
 
-                  fbCanvas.add(img);
+                  fabricCanvas.add(img);
               });
           };
           reader.readAsDataURL(file);
       });
 
       const setCanvasSize = () => {
-        let canvasWidth = window.innerWidth * 0.75;
-        let canvasHeight = canvasWidth / aspectRatio;
+          let canvasWidth = window.innerWidth * 0.75;
+          let canvasHeight = canvasWidth / aspectRatio;
 
 
-        // Adjust canvas width and height if necessary to fit within the window
-        if (canvasHeight > window.innerHeight * 0.75) {
-          canvasHeight = window.innerHeight * 0.75;
-          canvasWidth = canvasHeight * aspectRatio;
-        }
+          // Adjust canvas width and height if necessary to fit within the window
+          if (canvasHeight > window.innerHeight * 0.75) {
+              canvasHeight = window.innerHeight * 0.75;
+              canvasWidth = canvasHeight * aspectRatio;
+          }
 
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
+          fabricCanvas.setDimensions({
+              width: canvasWidth,
+              height: canvasHeight
+          });
       };
 
       const renderCanvasBackground = () => {
-          const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
 
           if(backgroundImg) {
               fabricCanvas.setBackgroundImage(backgroundImg, fabricCanvas.renderAll.bind(fabricCanvas), {
