@@ -72,10 +72,11 @@
 
 <script src="{{ 'fabric.min.js' | asset_url }}"></script>
 <script>
+      const canvas = document.getElementById("{{ canvas_id }}");
+      const ctx = canvas.getContext("2d");
       let aspectRatio = 375 / 667; // The default aspect ratio
       let backgroundImg = null;
       let fileInput = document.getElementById("imageUploader");
-      const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
 
       window.addEventListener("resize", () => {
       setCanvasSize();
@@ -85,12 +86,13 @@
           var file = e.target.files[0];
           var reader = new FileReader();
           reader.onload = function(f) {
+              const fbCanvas = new fabric.Canvas("{{ canvas_id }}");
               var data = f.target.result;
               fabric.Image.fromURL(data, function(img) {
-                  let defaultWidth = farbicCanvas.width * 0.25;
-                  let defaultHeight = farbicCanvas.height * 0.25;
-                  let defaultLeft = farbicCanvas.width * 0.75;
-                  let defaultTop = farbicCanvas.height * 0.75;
+                  let defaultWidth = fbCanvas.width * 0.25;
+                  let defaultHeight = fbCanvas.height * 0.25;
+                  let defaultLeft = fbCanvas.width * 0.75;
+                  let defaultTop = fbCanvas.height * 0.75;
 
                   img.set({
                       left: defaultLeft,
@@ -99,7 +101,7 @@
                       scaleY: defaultHeight / img.height
                   })
 
-                  fabricCanvas.add(img);
+                  fbCanvas.add(img);
               });
           };
           reader.readAsDataURL(file);
@@ -116,11 +118,12 @@
           canvasWidth = canvasHeight * aspectRatio;
         }
 
-        fabricCanvas.width = canvasWidth;
-        fabricCanvas.height = canvasHeight;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
       };
 
       const renderCanvasBackground = () => {
+          const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
 
           if(backgroundImg) {
               fabricCanvas.setBackgroundImage(backgroundImg, fabricCanvas.renderAll.bind(fabricCanvas), {
