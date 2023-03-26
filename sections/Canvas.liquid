@@ -107,6 +107,7 @@
 
           // 加载背景图片
           fabric.Image.fromURL("{{ 'iphone_background.jpeg' | asset_url }}", function(img) {
+              backgroundImg = img;
               // 将图片设置为 canvas 背景
               fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas), {
                   // 将背景图片的尺寸设置为 canvas 的尺寸，以填满整个 canvas
