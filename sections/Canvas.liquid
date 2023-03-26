@@ -122,10 +122,12 @@
           })
       }
 
-      setCanvasSize();
-      let afterLoad = await backgroundImgLoader();
-      renderCanvasBackground();
-      aspectMenuInit();
+
+      backgroundImgLoader().then((img)=>{
+          setCanvasSize();
+          renderCanvasBackground();
+          aspectMenuInit();
+      })
 
 
       // 在这里编写您的 JavaScript 代码，以便在 Canvas 元素中显示图像或执行其他操作
