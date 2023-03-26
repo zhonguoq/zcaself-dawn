@@ -1,0 +1,128 @@
+|/
+{% schema %}
+{
+  "name": "Canvas Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "canvas_id",
+      "label": "Canvas ID",
+      "default": "canvas"
+    },
+    {
+      "type": "text",
+      "id": "canvas_border",
+      "label": "Canvas Border",
+      "default": "4px solid red"
+    }
+  ]
+}
+{% endschema %}
+
+{% assign canvas_id = section.settings.canvas_id | default: 'canvas' %}
+{% assign canvas_border = section.settings.canvas_border | default: '4px solid red' %}
+
+<style>
+  .canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  #{{ canvas_id }} {
+    border: {{ canvas_border }};
+    max-width: 75vw;
+    height: auto;
+  }
+
+  .canvas-menu {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .canvas-menu h2 {
+    margin-top: 0;
+  }
+
+  .canvas-menu button {
+    margin-top: 10px;
+    padding: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+</style>
+
+<div class="canvas-container">
+  <canvas id="{{ canvas_id }}"></canvas>
+  <div class="canvas-menu">
+    <h2>Aspect Ratio</h2>
+    <button data-aspect-ratio="375/667">iPhone 14</button>
+  </div>
+</div>
+
+<script src="{{ 'fabric.min.js' | asset_url }}"></script>
+<script>
+      const canvas = document.getElementById("{{ canvas_id }}");
+      const ctx = canvas.getContext("2d");
+      let aspectRatio = 375 / 667; // The default aspect ratio
+
+      window.addEventListener("resize", () => {
+      setCanvasSize();
+      renderCanvasBackground();
+    });
+
+      const setCanvasSize = () => {
+        let canvasWidth = window.innerWidth * 0.75;
+        let canvasHeight = canvasWidth / aspectRatio;
+
+
+        // Adjust canvas width and height if necessary to fit within the window
+        if (canvasHeight > window.innerHeight * 0.75) {
+          canvasHeight = window.innerHeight * 0.75;
+          canvasWidth = canvasHeight * aspectRatio;
+        }
+
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+      };
+
+      const renderCanvasBackground = () => {
+          const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
+
+          // 加载背景图片
+          fabric.Image.fromURL("{{ 'iphone_background.jpeg' | asset_url }}", function(img) {
+              // 将图片设置为 canvas 背景
+              fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas), {
+                  // 将背景图片的尺寸设置为 canvas 的尺寸，以填满整个 canvas
+                  scaleX: fabricCanvas.width / img.width,
+                  scaleY: fabricCanvas.height / img.height,
+                  // 禁止编辑背景图片
+                  selectable: false,
+                  evented: false
+              });
+          });
+      };
+
+      const aspectMenuInit = () => {
+          // Event listener for aspect ratio buttons
+          const aspectRatioButtons = document.querySelectorAll(".canvas-menu button");
+          aspectRatioButtons.forEach(button => {
+              button.addEventListener("click", () => {
+                  const selectedAspectRatio = button.getAttribute("data-aspect-ratio");
+                  aspectRatio = eval(selectedAspectRatio); // Evaluate string to get aspect ratio number
+                  setCanvasSize();
+              });
+          });
+      }
+
+      setCanvasSize();
+      renderCanvasBackground();
+      aspectMenuInit();
+
+
+      // 在这里编写您的 JavaScript 代码，以便在 Canvas 元素中显示图像或执行其他操作
+</script>
