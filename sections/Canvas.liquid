@@ -66,8 +66,10 @@
 
 <script src="{{ 'fabric.min.js' | asset_url }}"></script>
 <script>
+      let backgroundImg = null;
       const canvas = document.getElementById("{{ canvas_id }}");
       const ctx = canvas.getContext("2d");
+      const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
       let aspectRatio = 375 / 667; // The default aspect ratio
 
       window.addEventListener("resize", () => {
@@ -91,19 +93,11 @@
       };
 
       const renderCanvasBackground = () => {
-          const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
-
-          // 加载背景图片
-          fabric.Image.fromURL("{{ 'iphone_background.jpeg' | asset_url }}", function(img) {
-              // 将图片设置为 canvas 背景
-              fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas), {
-                  // 将背景图片的尺寸设置为 canvas 的尺寸，以填满整个 canvas
-                  scaleX: fabricCanvas.width / img.width,
-                  scaleY: fabricCanvas.height / img.height,
-                  // 禁止编辑背景图片
-                  selectable: false,
-                  evented: false
-              });
+          fabricCanvas.rednerAll({
+              scaleX: canvas.width / backgroundImg.width,
+              scaleY: canvas.height / backgroundImg.height,
+              selectable: false,
+              evented: false
           });
       };
 
@@ -119,7 +113,17 @@
           });
       }
 
+      const backgroundImgLoader = ()=>{
+          return new Promise((resolve, reject)=>{
+              fabric.Image.fromURL("{{ 'iphone_background.jpeg' | asset_url }}", function(img) {
+                  backgroundImg = img;
+                  resolve(backgroundImg);
+              });
+          })
+      }
+
       setCanvasSize();
+      let afterLoad = await backgroundImgLoader();
       renderCanvasBackground();
       aspectMenuInit();
 
