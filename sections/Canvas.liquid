@@ -95,6 +95,7 @@
           const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
 
           if(backgroundImg) {
+              console.log("backgroundImg", backgroundImg)
               fabricCanvas.setBackgroundImage(backgroundImg, fabricCanvas.renderAll.bind(fabricCanvas), {
                   scaleX: fabricCanvas.width / backgroundImg.width,
                   scaleY: fabricCanvas.height / backgroundImg.height,
