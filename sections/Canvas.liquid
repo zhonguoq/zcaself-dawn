@@ -77,7 +77,7 @@
       let aspectRatio = 375 / 667; // The default aspect ratio
       let backgroundImg = null;
       let fileInput = document.getElementById("imageUploader");
-      const facricCanvas = new fabric.Canvas("{{ canvas_id }}");
+      const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
 
       window.addEventListener("resize", () => {
       setCanvasSize();
@@ -123,7 +123,6 @@
       };
 
       const renderCanvasBackground = () => {
-          const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
 
           if(backgroundImg) {
               fabricCanvas.setBackgroundImage(backgroundImg, fabricCanvas.renderAll.bind(fabricCanvas), {
