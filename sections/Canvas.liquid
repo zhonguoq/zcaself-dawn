@@ -69,6 +69,7 @@
       const canvas = document.getElementById("{{ canvas_id }}");
       const ctx = canvas.getContext("2d");
       let aspectRatio = 375 / 667; // The default aspect ratio
+      let backgroundImg = null;
 
       window.addEventListener("resize", () => {
       setCanvasSize();
@@ -92,6 +93,16 @@
 
       const renderCanvasBackground = () => {
           const fabricCanvas = new fabric.Canvas("{{ canvas_id }}");
+
+          if(backgroundImg) {
+              fabricCanvas.setBackgroundImage(backgroundImg, fabricCanvas.renderAll.bind(fabricCanvas), {
+                  scaleX: fabricCanvas.width / backgroundImg.width,
+                  scaleY: fabricCanvas.height / backgroundImg.height,
+                  selectable: false,
+                  evented: false
+              });
+              return;
+          }
 
           // 加载背景图片
           fabric.Image.fromURL("{{ 'iphone_background.jpeg' | asset_url }}", function(img) {
