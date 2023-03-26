@@ -62,11 +62,13 @@
 
 <div class="canvas-container">
   <canvas id="{{ canvas_id }}"></canvas>
-  <div class="canvas-menu">
-    <h2>Aspect Ratio</h2>
-    <button data-aspect-ratio="375/667">iPhone 14</button>
-  </div>
+  <input type="file" id="imageUploader" accept="image/*" />
 </div>
+
+<div class="canvas-menu">
+   <h2>Aspect Ratio</h2>
+   <button data-aspect-ratio="375/667">iPhone 14</button>
+ </div>
 
 <script src="{{ 'fabric.min.js' | asset_url }}"></script>
 <script>
@@ -74,11 +76,23 @@
       const ctx = canvas.getContext("2d");
       let aspectRatio = 375 / 667; // The default aspect ratio
       let backgroundImg = null;
+      let fileInput = document.getElementById("imageUploader");
 
       window.addEventListener("resize", () => {
       setCanvasSize();
       renderCanvasBackground();
     });
+      fileInput.addEventListener("change", function(e) {
+          var file = e.target.files[0];
+          var reader = new FileReader();
+          reader.onload = function(f) {
+              var data = f.target.result;
+              fabric.Image.fromURL(data, function(img) {
+                  fabricCanvas.add(img);
+              });
+          };
+          reader.readAsDataURL(file);
+      });
 
       const setCanvasSize = () => {
         let canvasWidth = window.innerWidth * 0.75;
