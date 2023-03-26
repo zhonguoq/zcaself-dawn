@@ -89,10 +89,10 @@
           reader.onload = function(f) {
               var data = f.target.result;
               fabric.Image.fromURL(data, function(img) {
-                  let defaultWidth = farbicCanvas.width * 0.25;
-                  let defaultHeight = farbicCanvas.height * 0.25;
-                  let defaultLeft = farbicCanvas.width * 0.75;
-                  let defaultTop = farbicCanvas.height * 0.75;
+                  let defaultWidth = fabricCanvas.width * 0.25;
+                  let defaultHeight = fabricCanvas.height * 0.25;
+                  let defaultLeft = fabricCanvas.width * 0.75;
+                  let defaultTop = fabricCanvas.height * 0.75;
 
                   img.set({
                       left: defaultLeft,
